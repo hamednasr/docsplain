@@ -5,11 +5,10 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_openai import ChatOpenAI
 
-# Load .env
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
-# Setup the model
+
 llm = ChatOpenAI(
     model="gpt-4",
     temperature=0.9,
@@ -17,7 +16,6 @@ llm = ChatOpenAI(
     api_key=api_key
 )
 
-# Define prompt
 system_prompt = """You are a medical appointment scheduler. Follow these steps STRICTLY:
 
 1. **Registration First**:
@@ -60,7 +58,6 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}")
 ])
 
-# Patient and doctor data
 patient_list = ["Ali Rezaei", "Sara Montazeri", "John Williams", "Fatemeh Ghasemi", "David Gilmore"]
 doctor_data = [
     {
@@ -106,10 +103,8 @@ doctor_data = [
     }
 ]
 
-# Combine chain and config
 chain = prompt | llm
 
-# Create a store for chat histories
 store = {}
 
 def get_session_history(session_id: str) -> ChatMessageHistory:
@@ -117,7 +112,6 @@ def get_session_history(session_id: str) -> ChatMessageHistory:
         store[session_id] = ChatMessageHistory()
     return store[session_id]
 
-# Use memory with RunnableWithMessageHistory
 runnable_with_history = RunnableWithMessageHistory(
     chain,
     get_session_history,
@@ -125,11 +119,10 @@ runnable_with_history = RunnableWithMessageHistory(
     history_messages_key="chat_history"
 )
 
-# Continuous chat loop
 print("Medical Appointment Scheduler (Type 'quit' to exit)")
 print("-----------------------------------------------")
 
-session_id = "user-session-001"  # You can make this dynamic if needed
+session_id = "user-session-001"  
 
 while True:
     user_input = input("You: ")
